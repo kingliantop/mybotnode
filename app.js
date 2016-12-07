@@ -1,6 +1,6 @@
 var express   = require('express'),
     builder   = require('botbuilder'),
-    connector = require('../WechatConnector');
+    connector = require('botbuilder-wechat-connector');
 
 // Create http server
 var app    = express();
@@ -42,7 +42,7 @@ bot.dialog('/', [
     }
 ]);
 
-app.use('/bot/wechat', wechatConnector.listen());
+app.use('/', wechatConnector.listen());
 
 app.get('*', function(req, res) {
     res.send(200, 'Hello Wechat Bot');
