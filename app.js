@@ -1,39 +1,54 @@
-var express = require('express');
-var app = express();
-var crypto = require('crypto');
-var token = 'mytesttokendemo';           // your Token
+var express   = require('express'),
+    builder   = require('botbuilder'),
+    connector = require('../WechatConnector');
 
+// Create http server
+var app    = express();
 
-// 如果你的URL配置成 http://your-url.com/wechat,
-// 那么就修改为 app.use('/wechat', function(req, res, next){}
+// Create wechat connector
+var wechatConnector = new connector.WechatConnector({
+    appID: "wx00f1e1d61568aa50",
+    appSecret: "40936478e630cf787392be4dd81d77bc",
+    appToken: "mytesttokendemo"
+});
 
-app.use('/', function(req, res, next){
-    console.log('start weixin url validation...');
+var bot = new builder.UniversalBot(wechatConnector);
 
-    var signature =  req.query.signature,
-        timestamp = req.query.timestamp,
-        nonce = req.query.nonce,
-        echostr = req.query.echostr;
-
-    var sha1 = crypto.createHash('sha1'),
-        sha1Str = sha1.update([token, timestamp, nonce].sort().join('')).digest('hex');
-
-    res.set('Content-Type', 'text/plain');
-
-    if (sha1Str == signature) {
-        res.status(200).send(echostr);
-        console.log('validation success');
-    } else {
-        console.log('validation error');
-        res.status(500).end();
+// Bot dialogs
+bot.dialog('/', [
+    function (session) {
+        if (session.userData && session.userData.name) {
+            if (session.message.attachments &&
+                session.message.attachments.length > 0) {
+                var atm = session.message.attachments[0];
+                if (atm.contentType == connector.WechatAttachmentType.Image) {
+                    var msg = new builder.Message(session).attachments([atm]);
+                    session.send(msg);
+                }
+            }
+            session.send("How are you, " + session.userData.name);
+        } else {
+            builder.Prompts.text(session, "What's your name?");
+        }
+    },
+    function (session, results) {
+        session.userData.name = results.response;
+        session.send("OK, " + session.userData.name);
+        builder.Prompts.text(session, "What's your age?");
+    },
+    function (session, results) {
+        session.userData.age = results.response;
+        session.send("All right, " + results.response);
     }
+]);
 
+app.use('/bot/wechat', wechatConnector.listen());
+
+app.get('*', function(req, res) {
+    res.send(200, 'Hello Wechat Bot');
 });
 
-// 如果你用nginx做proxy_pass,那么请在nginx里面设置一下,
-// 如果你没有用 proxy_pass, 那么可将端口修改为 80
-
-app.listen(process.env.PORT, function(){
-    console.log('Validation server start listening at system port')
+// Start listen on port
+app.listen(process.env.PORT || 8080, function() {
+    console.log('server is running.');
 });
-
