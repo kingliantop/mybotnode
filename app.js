@@ -15,32 +15,13 @@ server.listen(process.env.PORT || 3000, function()
 var connector = new builder.ChatConnector
 ({ appId: process.env.MY_APP_ID, appPassword: process.env.MY_APP_PASSWORD }); 
 
-//create a text bot
-var bot = new builder.TextBot(connector);
-bot.add('/', function (session) {
-    if (!session.userData.name) {
-        session.beginDialog('/profile');
-    } else {
-        session.send('Hello %s!', session.userData.name);
-    }
+var bot = new builder.UniversalBot(connector);
+server.post('/api/messages', connector.listen());
+
+// Create bot dialogs
+bot.dialog('/', function (session) {
+    session.send("You send message!");
 });
-bot.add('/profile', [
-    function (session) {
-        builder.Prompts.text(session, 'Hi! What is your name?');
-    },
-    function (session, results) {
-        session.userData.name = results.response;
-        session.endDialog();
-    }
-]);
-
-// var bot = new builder.UniversalBot(connector);
-// server.post('/api/messages', connector.listen());
-
-// // Create bot dialogs
-// bot.dialog('/', function (session) {
-//     session.send("You send message: "+session.userData.name);
-// });
 
 server.get('/', restify.serveStatic({
  directory: __dirname,
