@@ -1,0 +1,25 @@
+{
+  "name": "mybotnode",
+  "version": "1.0.0",
+  "description": "Steven's demo for wechat, bot framework, cognitive service",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kingliantop/mybotnode.git"
+  },
+  "keywords": [
+    "wechat",
+    "bot",
+    "cognitive",
+    "service"
+  ],
+  "author": "Steven Lian",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kingliantop/mybotnode/issues"
+  },
+  "homepage": "https://github.com/kingliantop/mybotnode#readme"
+}
