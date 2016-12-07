@@ -1,42 +1,39 @@
-var http = require("http");
-var url = require("url");
-var crypto = require("crypto");
-
-function sha1(str){
-  var md5sum = crypto.createHash("sha1");
-  md5sum.update(str);
-  str = md5sum.digest("hex");
-  return str;
-}
-
-function validateToken(req,res){
-  var query = url.parse(req.url,true).query;
-  //console.log("*** URL:" + req.url);
-  //console.log(query);
-  var signature = query.signature;
-  var echostr = query.echostr;
-  var timestamp = query['timestamp'];
-  var nonce = query.nonce;
-  var oriArray = new Array();
-  oriArray[0] = nonce;
-  oriArray[1] = timestamp;
-  oriArray[2] = "mytesttokendemo";//这里是你在微信开发者中心页面里填的token，而不是****
-  oriArray.sort();
-  var original = oriArray.join('');
-  console.log("Original str : " + original);
-  console.log("Signature : " + signature );
-  var scyptoString = sha1(original);
-  if(signature == scyptoString){
-    res.end(echostr);
-    console.log("Confirm and send echo back");
-  }else {
-    res.end("false");
-    console.log("Failed!");
-  }
-}
+var express = require('express');
+var app = express();
+var crypto = require('crypto');
+var token = 'mytesttokendemo';           // your Token
 
 
-var webSvr = http.createServer(validateToken);
-webSvr.listen(process.env.PORT,function(){
-  console.log("Start validate");
+// 如果你的URL配置成 http://your-url.com/wechat,
+// 那么就修改为 app.use('/wechat', function(req, res, next){}
+
+app.use('/', function(req, res, next){
+    console.log('start weixin url validation...');
+
+    var signature =  req.query.signature,
+        timestamp = req.query.timestamp,
+        nonce = req.query.nonce,
+        echostr = req.query.echostr;
+
+    var sha1 = crypto.createHash('sha1'),
+        sha1Str = sha1.update([token, timestamp, nonce].sort().join('')).digest('hex');
+
+    res.set('Content-Type', 'text/plain');
+
+    if (sha1Str == signature) {
+        res.status(200).send(echostr);
+        console.log('validation success');
+    } else {
+        console.log('validation error');
+        res.status(500).end();
+    }
+
 });
+
+// 如果你用nginx做proxy_pass,那么请在nginx里面设置一下,
+// 如果你没有用 proxy_pass, 那么可将端口修改为 80
+
+app.listen(process.env.PORT, function(){
+    console.log('Validation server start listening at system port')
+});
+
