@@ -49,6 +49,6 @@ app.get('*', function(req, res) {
 });
 
 // Start listen on port
-app.listen(process.env.port || 9090, function() {
+app.listen(process.env.PORT || 9090, function() {
     console.log('server is running.');
 });
