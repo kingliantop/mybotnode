@@ -1,11 +1,95 @@
 <!doctype html>
-<html>
-   <head>
-      <title>Steven's demo for Bot+Cognitive service</title>
-   </head>
-   <body>
+<html ng-app="myapp">
+  <head>
+    <title>Steven's demo for Bot+Cognitive service</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script type="application/javascript" src="jquery.iframeResizer.min.js"></script>
+  </head>
+  <body>
+    <iframe id="idIframe" onload="iframeLoaded()" src="https://webchat.botframework.com/embed/mybotnode?s=M-E2mbzhPus.cwA.YQc.vWHNSyH6zL7Klth4WjT_lxgmE5kUKxgzg3sT67ljA0g" width="100%" scrolling="no"></iframe>
+    <script>
+    $('iframe').iFrameSizer({
+// Disable if using size method with custom dimensions.
+autoResize                : true,
 
+// Override the body background style in the iFrame.
+bodyBackground            : null,
 
-    <iframe src="https://webchat.botframework.com/embed/mybotnode?s=M-E2mbzhPus.cwA.YQc.vWHNSyH6zL7Klth4WjT_lxgmE5kUKxgzg3sT67ljA0g" style="position: absolute; height: 100%;width: 100%; border: none"></iframe>
-</body>
+// Override the default body margin style in the iFrame.
+// A string can be any valid value for the CSS margin attribute, 
+// for example '8px 3em'. A number value is converted into px.
+bodyMargin                : null,
+bodyMarginV1              : 8,
+bodyPadding               : null,
+
+// When set to true, only allow incoming messages from the domain 
+// listed in the src property of the iFrame tag. If your iFrame 
+// navigates between different domains, ports or protocols; 
+// then you will need to disable this option.
+checkOrigin               : true,
+
+// If enabled, a window.parentIFrame object is created in the iFrame 
+// that contains methods outlined
+enablePublicMethods       : false,
+
+// 'bodyOffset' | 'body<a href="http://www.jqueryscript.net/tags.php?/Scroll/">Scroll</a>' | 'documentElementOffset' | 'documentElementScroll' | 
+// 'max' | 'min' | 'grow' | 'lowestElement'
+heightCalculationMethod   : 'offset',
+
+// The default value is equal to two frame refreshes at 60Hz
+interval                  : 32,
+
+// Setting the log option to true will make the scripts in both the host page 
+// and the iFrame output everything they do to the JavaScript console 
+// so you can see the communication between the two scripts.
+log                       : false,
+
+// Set maximum height/width of iFrame.
+maxHeight                 : Infinity,
+maxWidth                  : Infinity,
+
+// Set minimum height/width of iFrame.
+minHeight                 : 500,
+minWidth                  : 0,
+
+// Enable scroll bars in iFrame.
+scrolling                 : false,
+
+// Resize iFrame to content height.
+sizeHeight                : true,
+
+// Resize iFrame to content width.
+sizeWidth                 : false,
+
+// Set the number of pixels the iFrame content size has to change by, 
+// before triggering resize of the iFrame.
+tolerance                 : 0,
+
+// Called when iFrame is closed via parentIFrame.close() method.
+closedCallback            : function(){},
+
+// Initial setup callback function.
+initCallback              : function(){},
+
+// Receive message posted from iFrame with the parentIFrame.sendMessage() method.
+messageCallback           : function(){},
+
+// Function called after iFrame resized.
+resizedCallback           : function(){},
+
+// Called before the page is repositioned after a request from the iFrame
+scrollCallback            : function(){return true;}
+});<br>
+    </script>
+    <script type="text/javascript">
+  function iframeLoaded() {
+      var iFrameID = document.getElementById('idIframe');
+      if(iFrameID) {
+            // here you can make the height, I delete it first, then I make it again
+            iFrameID.height = "700";
+            iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + "px";
+      }   
+  }
+</script>   
+  </body>
 </html>
