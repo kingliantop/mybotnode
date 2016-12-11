@@ -3,7 +3,7 @@ An image caption bot for the Microsoft Bot Framework.
 -----------------------------------------------------------------------------*/
 
 // This loads the environment variables from the .env file
-require('dotenv-extended').load();
+//require('dotenv-extended').load();
 
 const builder = require('botbuilder'),
     captionService = require('./caption-service'),
